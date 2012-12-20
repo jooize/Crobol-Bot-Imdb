@@ -60,7 +60,6 @@ def main():
 	parser.add_argument("--no-rating", dest="rating", help="Don't show rating", action="store_false", default=True)
 	parser.add_argument("--no-year", dest="year", help="Don't show year", action="store_false", default=True)
 	parser.add_argument("--ascii-only", help="Only ASCII, no Unicode", action="store_true")
-	parser.add_argument("-h", "--help", help="Show this help message and exit")
 	args = parser.parse_args()
 
 	imdb_access = imdb.IMDb()
