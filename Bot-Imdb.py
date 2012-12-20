@@ -37,7 +37,7 @@ def get_url_string(imdb_access, movie, dash="ASCII"):
 def get_title_string(movie):
 	return movie['long imdb canonical title']
 
-def main(argv):
+def i():
 	parser = argparse.ArgumentParser(description='Get information about movies or series from IMDb.')
 	parser.add_argument("title", nargs="+", help="Movie or TV serie")
 	parser.add_argument("--url", help="Print URL to IMDb page", action="store_true")
@@ -66,6 +66,6 @@ def main(argv):
 
 	print print_string
 
-if __name__ == "__main__":
-	main(sys.argv[1:])
+if __name__  == "__main__":
+	i()
 
