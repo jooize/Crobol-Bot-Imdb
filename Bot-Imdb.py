@@ -1,23 +1,28 @@
 #!/usr/bin/env python
 
-import sys
 import argparse
 import imdb
 
 # movie must be an IMDb Movie object
 def get_genre_string(movie):
-	genre_string = movie['genre'][0]
-	for genre in movie['genre'][1:]:
-		genre_string += " | " + genre
+	if movie.has_key('genre'):
+		genre_string = movie['genre'][0]
+		for genre in movie['genre'][1:]:
+			genre_string += " | " + genre
+	else:
+		genre_string = "No genre"
 	return genre_string
 
-def get_rating_string(movie, encoding="ASCII"):
-	rating_string = str(movie['rating'])
-	if encoding == "Unicode":
-		# \u2605 is BLACK STAR
-		rating_string += u" \u2605"
+def get_rating_string(movie, rating_star="ASCII"):
+	if movie.has_key('rating'):
+		rating_string = str(movie['rating'])
+		if rating_star == "Unicode":
+			# \u2605 is BLACK STAR
+			rating_string += u" \u2605"
+		else:
+			rating_string += " stars"
 	else:
-		rating_string += " stars"
+		rating_string = ""
 	return rating_string
 
 def get_url_string(imdb_access, movie, dash="ASCII"):
@@ -31,41 +36,69 @@ def get_url_string(imdb_access, movie, dash="ASCII"):
 		dash_string = u"\u2014"
 	else:
 		dash_string = "--"
-	url_string = dash_string + imdb_url
+	url_string = dash_string + " " + imdb_url
 	return url_string
 
-def get_title_string(movie):
-	return movie['long imdb canonical title']
+def get_title_string(movie, quotes="Double quotation marks"):
+	if quotes == "Directional double quotation marks":
+		title_string = u"\u201C" + movie['title'] + u"\u201D"
+	elif quotes == "None":
+		title_string = movie['title'] + " "
+	else:
+		title_string = '"' + movie['title'] + '"'
+	return title_string
 
-def i():
+# Returns "????" if no year
+def get_year_string(movie):
+	return str(movie['year'])
+
+def asdf():
 	parser = argparse.ArgumentParser(description='Get information about movies or series from IMDb.')
 	parser.add_argument("title", nargs="+", help="Movie or TV serie")
-	parser.add_argument("--url", help="Print URL to IMDb page", action="store_true")
+	parser.add_argument("--url", help="Show URL to IMDb page", action="store_true")
 	parser.add_argument("--no-genre", dest="genre", help="Don't show genre", action="store_false", default=True)
 	parser.add_argument("--no-rating", dest="rating", help="Don't show rating", action="store_false", default=True)
+	parser.add_argument("--no-year", dest="year", help="Don't show year", action="store_false", default=True)
+	parser.add_argument("--ascii", help="Only ASCII, no Unicode", action="store_true")
 	args = parser.parse_args()
 
 	imdb_access = imdb.IMDb()
-	movie_args = ""
+
+	title = ""
 	for arg in args.title:
-		movie_args += arg + " "
-	search_result = imdb_access.search_movie(movie_args)
+		title += arg + " "
+
+	# Search for <title>
+	search_result = imdb_access.search_movie(title)
+
+	# First search result, movie or tv serie
 	movie = search_result[0]
+
+	# Fetch additional information
 	imdb_access.update(movie)
 
-	print_string = get_title_string(movie)
+	print_string = get_title_string(movie, "Directional double quotation marks")
+
+	if args.year:
+		print_string += " (" + get_year_string(movie) + ")"
 
 	if args.rating:
-		print_string += " " + get_rating_string(movie, "Unicode")
+		if args.ascii:
+			print_string += " " + get_rating_string(movie)
+		else:
+			print_string += " " + get_rating_string(movie, "Unicode")
 
 	if args.genre:
 		print_string += "  " + get_genre_string(movie)
 
 	if args.url:
-		print_string += get_url_string(imdb_access, movie, "Quotation dash")
+		if args.ascii:
+			print_string += " " + get_url_string(imdb_access, movie)
+		else:
+			print_string += " " + get_url_string(imdb_access, movie, "Quotation dash")
 
 	print print_string
 
 if __name__  == "__main__":
-	i()
+	asdf()
 
