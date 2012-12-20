@@ -1,34 +1,10 @@
 #!/usr/bin/env python
 
 import sys
-import getopt
 import imdb
 
 def main(argv):
 	imdb_access = imdb.IMDb()
-
-	#args_all = ""
-	#for arg in argv:
-		#args_all += arg + " "
-
-	#print args_all
-
-	#search_result = imdb_access.search_movie(args_all)
-	#print search_result[0]['long imdb canonical title']
-
-	#try:
-		#opts, args = getopt.getopt(argv,"h",["tvserie=","movie="])
-	#except getopt.GetoptError:
-		#print '!imdb --tvserie=Limitless'
-		#sys.exit(2)
-	#for opt, arg in opts:
-		#if opt == '-h':
-			#print '!imdb --stuff'
-			#sys.exit()
-		#elif opt in ("--tvserie"):
-			#print "TV Serie: " + arg
-		#elif opt in ("--movie"):
-			#print "Movie: " + arg
 
 	movie_args = ""
 	for arg in argv:
