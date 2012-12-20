@@ -52,14 +52,15 @@ def get_title_string(movie, quotes="Double quotation marks"):
 def get_year_string(movie):
 	return str(movie['year'])
 
-def asdf():
+def main():
 	parser = argparse.ArgumentParser(description='Get information about movies or series from IMDb.')
 	parser.add_argument("title", nargs="+", help="Movie or TV serie")
 	parser.add_argument("--url", help="Show URL to IMDb page", action="store_true")
 	parser.add_argument("--no-genre", dest="genre", help="Don't show genre", action="store_false", default=True)
 	parser.add_argument("--no-rating", dest="rating", help="Don't show rating", action="store_false", default=True)
 	parser.add_argument("--no-year", dest="year", help="Don't show year", action="store_false", default=True)
-	parser.add_argument("--ascii", help="Only ASCII, no Unicode", action="store_true")
+	parser.add_argument("--ascii-only", help="Only ASCII, no Unicode", action="store_true")
+	parser.add_argument("-h", "--help", help="Show this help message and exit")
 	args = parser.parse_args()
 
 	imdb_access = imdb.IMDb()
@@ -77,13 +78,16 @@ def asdf():
 	# Fetch additional information
 	imdb_access.update(movie)
 
-	print_string = get_title_string(movie, "Directional double quotation marks")
+	if args.ascii_only:
+		print_string = get_title_string(movie, "Double quotation marks")
+	else:
+		print_string = get_title_string(movie, "Directional double quotation marks")
 
 	if args.year:
 		print_string += " (" + get_year_string(movie) + ")"
 
 	if args.rating:
-		if args.ascii:
+		if args.ascii_only:
 			print_string += " " + get_rating_string(movie)
 		else:
 			print_string += " " + get_rating_string(movie, "Unicode")
@@ -92,7 +96,7 @@ def asdf():
 		print_string += "  " + get_genre_string(movie)
 
 	if args.url:
-		if args.ascii:
+		if args.ascii_only:
 			print_string += " " + get_url_string(imdb_access, movie)
 		else:
 			print_string += " " + get_url_string(imdb_access, movie, "Quotation dash")
@@ -100,5 +104,5 @@ def asdf():
 	print print_string
 
 if __name__  == "__main__":
-	asdf()
+	main()
 
