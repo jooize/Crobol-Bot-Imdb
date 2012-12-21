@@ -18,9 +18,9 @@ def get_rating_string(movie, rating_star="ASCII"):
 		rating_string = str(movie['rating'])
 		if rating_star == "Unicode":
 			# \u2605 is BLACK STAR
-			rating_string += u" \u2605"
+			rating_string += u" \u2605 "
 		else:
-			rating_string += " stars"
+			rating_string += " stars "
 	else:
 		rating_string = ""
 	return rating_string
@@ -52,14 +52,23 @@ def get_title_string(movie, quotes="Double quotation marks"):
 def get_year_string(movie):
 	return str(movie['year'])
 
+def get_runtime_string(movie):
+	if movie.has_key('runtime'):
+		runtime_string = "(" + str(movie['runtime'][0]) + " min)"
+	else:
+		runtime_string = "(?? min)"
+	return runtime_string
+
 def main():
-	parser = argparse.ArgumentParser(description='Get information about movies or series from IMDb.')
+	parser = argparse.ArgumentParser(usage="%(prog)s [-huAGRY] [--url] title [{title,year} ...]", description='Get information about movies or series from IMDb.')
 	parser.add_argument("title", nargs="+", help="Movie or TV serie")
-	parser.add_argument("--url", help="Show URL to IMDb page", action="store_true")
-	parser.add_argument("--no-genre", dest="genre", help="Don't show genre", action="store_false", default=True)
-	parser.add_argument("--no-rating", dest="rating", help="Don't show rating", action="store_false", default=True)
-	parser.add_argument("--no-year", dest="year", help="Don't show year", action="store_false", default=True)
-	parser.add_argument("--ascii-only", help="Only ASCII, no Unicode", action="store_true")
+	parser.add_argument("-u", "--url", help="Show URL to IMDb page", action="store_true")
+	parser.add_argument("-G", "--no-genre", dest="genre", help="Don't show genre", action="store_false", default=True)
+	parser.add_argument("-R", "--no-rating", dest="rating", help="Don't show rating", action="store_false", default=True)
+	parser.add_argument("-Y", "--no-year", dest="year", help="Don't show year", action="store_false", default=True)
+	parser.add_argument("-A", "--ascii-only", help="Only ASCII, no Unicode", action="store_true")
+	#parser.add_argument("-p", "--plot", help="Show plot", action="store_true")
+	parser.add_argument("--runtime", help="Show runtime", action="store_true")
 	args = parser.parse_args()
 
 	imdb_access = imdb.IMDb()
@@ -92,8 +101,11 @@ def main():
 			print_string += " " + get_rating_string(movie, "Unicode")
 
 	if args.genre:
-		print_string += "  " + get_genre_string(movie)
+		print_string += " " + get_genre_string(movie)
 
+	if args.runtime:
+		print_string += " " + get_runtime_string(movie)
+	
 	if args.url:
 		if args.ascii_only:
 			print_string += " " + get_url_string(imdb_access, movie)
