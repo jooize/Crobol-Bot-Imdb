@@ -60,7 +60,7 @@ def get_runtime_string(movie):
 	return runtime_string
 
 def main():
-	parser = argparse.ArgumentParser(usage="%(prog)s [-huAGRY] [--url] title [{title,year} ...]", description='Get information about movies or series from IMDb.')
+	parser = argparse.ArgumentParser(usage="!imdb [-huAGRY] [--url] title [{title,year} ...]", description='Get information about movies or series from IMDb.')
 	parser.add_argument("title", nargs="+", help="Movie or TV serie")
 	parser.add_argument("-u", "--url", help="Show URL to IMDb page", action="store_true")
 	parser.add_argument("-G", "--no-genre", dest="genre", help="Don't show genre", action="store_false", default=True)
